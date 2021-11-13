@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Complex Marker Icons</title>
+    <style>
+        #map {
+            height: 100%;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+   
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+
+        var map;
+        const pins = [
+            [
+                { "lat": 25.971778862089213, "lng": 40.87689884566242 },
+                { "lat": 28.549693960948915, "lng": 44.43646915816242 },
+            ],
+            [
+                { "lat": 22.038706216949617, "lng": 40.52533634566242 },
+                { "lat": 25.059631166150204, "lng": 46.15033634566242 },
+            ],
+            [
+                { "lat": 20.647079863575016, "lng": 43.68939884566242 },
+                { "lat": 19.698353051912758, "lng": 44.12885197066242 },
+            ],
+            [
+                { "lat": 22.6483915289851, "lng": 54.85150822066242 },
+                { "lat": 21.9572142855246, "lng": 58.89447697066242 },
+            ],
+            [
+                { "lat": 17.941116952037863, "lng": 43.22967465753071 },
+                { "lat": 21.04759989485365, "lng": 50.65643247003071 },
+            ],
+            [
+                { "lat": 26.18601139183556, "lng": 32.28729184503071 },
+                { "lat": 29.488388206888555, "lng": 39.40643247003071 },
+            ],
+        ];
+
+        function init() {
+            var Map = google.maps.Map,
+                LatLng = google.maps.LatLng,
+                LatLngBounds = google.maps.LatLngBounds,
+                Marker = google.maps.Marker,
+                Point = google.maps.Point;
+
+            map = new Map(document.getElementById('map'), {
+                center: { "lat": 17.941116952037863, "lng": 43.22967465753071 },
+                zoom: 5,
+                styles: [
+                    {
+                        "featureType": "administrative",
+                        "elementType": "labels.text.fill",
+                        "stylers": [
+                            {
+                                "color": "#444444"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "landscape",
+                        "elementType": "all",
+                        "stylers": [
+                            {
+                                "color": "#EEE7DE"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "poi",
+                        "elementType": "all",
+                        "stylers": [
+                            {
+                                "visibility": "off"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "road",
+                        "elementType": "all",
+                        "stylers": [
+                            {
+                                "visibility": "off"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "road.highway",
+                        "elementType": "all",
+                        "stylers": [
+                            {
+                                "visibility": "off"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "road.arterial",
+                        "elementType": "labels.icon",
+                        "stylers": [
+                            {
+                                "visibility": "off"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "transit",
+                        "elementType": "all",
+                        "stylers": [
+                            {
+                                "visibility": "off"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "water",
+                        "elementType": "all",
+                        "stylers": [
+                            {
+                                "color": "#46bcec"
+                            },
+                            {
+                                "visibility": "on"
+                            }
+                        ]
+                    },
+                    {
+                        featureType: "landscape.natural",
+                        stylers: [
+                            {
+                                visibility: "on"
+                            }
+                        ]
+                    },{
+                        featureType: "poi.park",
+                        stylers: [
+                            {
+                                visibility: "on"
+                            }
+                        ]
+                    }
+                ]
+            });
+
+            const image1 = {
+                url: "box.png",
+                size: new google.maps.Size(92, 92),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(46, 46),
+            };
+            const image2 = {
+                url: "pin.png",
+                size: new google.maps.Size(27, 38),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(15, 23),
+            };
+
+            for (let i = 0; i < pins.length; i++) {
+                    var pos1 = new LatLng(pins[i][0]['lat'], pins[i][0]['lng']);
+                    var pos2 = new LatLng(pins[i][1]['lat'], pins[i][1]['lng']);
+                    var markerP1 = new Marker({
+                        position: pos1,
+                        icon: image1,
+                        map: map
+                    });
+                    var markerP2 = new Marker({
+                        position: pos2,
+                        icon: image2,
+                        map: map
+                    });
+                    var lineLength = google.maps.geometry.spherical.computeDistanceBetween(markerP1.getPosition(), markerP2.getPosition());
+                    var lineHeading = google.maps.geometry.spherical.computeHeading(markerP1.getPosition(), markerP2.getPosition());
+                    var lineHeading1, lineHeading2;
+                    if (lineHeading < 0) {
+                        lineHeading1 = lineHeading + 45;
+                        lineHeading2 = lineHeading + 135;
+                    } else {
+                        lineHeading1 = lineHeading + -45;
+                        lineHeading2 = lineHeading + -135;
+                    }
+                    var markerA = new google.maps.Marker({
+                        position: google.maps.geometry.spherical.computeOffset(markerP1.getPosition(), lineLength / 2.2, lineHeading1),
+                        map: map,
+                        visible: false,
+                    });
+                    var markerB = new google.maps.Marker({
+                        position: google.maps.geometry.spherical.computeOffset(markerP2.getPosition(), lineLength / 2.2, lineHeading2),
+                        visible: false,
+                        map: map
+                    });
+
+                    var curvedLine = new GmapsCubicBezier(markerP1.getPosition(), markerA.getPosition(), markerB.getPosition(), markerP2.getPosition(), 0.01, map);
+            }
+        
+        
+        
+        }
+
+        var GmapsCubicBezier = function (latlong1, latlong2, latlong3, latlong4, resolution, map) {
+            var lat1 = latlong1.lat();
+            var long1 = latlong1.lng();
+            var lat2 = latlong2.lat();
+            var long2 = latlong2.lng();
+            var lat3 = latlong3.lat();
+            var long3 = latlong3.lng();
+            var lat4 = latlong4.lat();
+            var long4 = latlong4.lng();
+
+            var points = [];
+
+            for (it = 0; it <= 1; it += resolution) {
+                points.push(this.getBezier({
+                    x: lat1,
+                    y: long1
+                }, {
+                    x: lat2,
+                    y: long2
+                }, {
+                    x: lat3,
+                    y: long3
+                }, {
+                    x: lat4,
+                    y: long4
+                }, it));
+            }
+        var path = [];
+            for (var i = 0; i < points.length - 1; i++) {
+                path.push(new google.maps.LatLng(points[i].x, points[i].y));
+                path.push(new google.maps.LatLng(points[i + 1].x, points[i + 1].y, false));
+                        }
+                        
+                var Line = new google.maps.Polyline({
+                    path: path,
+                    geodesic: true,
+                    strokeOpacity: 0,
+                    icons: [{
+                        icon: {
+                            path: 'M 0,-0.5 0,2',
+                            strokeOpacity: 0.7,
+                            scale: 4
+                        },
+                        offset: '0',
+                        repeat: '20px'
+                    }],
+                    strokeColor: 'white'
+                });
+
+                Line.setMap(map);
+
+            return Line;
+        };
+
+
+        GmapsCubicBezier.prototype = {
+
+            B1: function (t) {
+                return t * t * t;
+            },
+            B2: function (t) {
+                return 3 * t * t * (1 - t);
+            },
+            B3: function (t) {
+                return 3 * t * (1 - t) * (1 - t);
+            },
+            B4: function (t) {
+                return (1 - t) * (1 - t) * (1 - t);
+            },
+            getBezier: function (C1, C2, C3, C4, percent) {
+                var pos = {};
+                pos.x = C1.x * this.B1(percent) + C2.x * this.B2(percent) + C3.x * this.B3(percent) + C4.x * this.B4(percent);
+                pos.y = C1.y * this.B1(percent) + C2.y * this.B2(percent) + C3.y * this.B3(percent) + C4.y * this.B4(percent);
+                return pos;
+            }
+        };
+    </script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBX8UDJVIgEkI5fiAqSwuT4H26DKFclIPM&callback=init&libraries=geometry"
+      async
+      defer
+    ></script>
+  </body>
+  <!-- AIzaSyB3bABW7kKWoZmbDMAjRsR1aFuW4m10bcg -->
+</html>
